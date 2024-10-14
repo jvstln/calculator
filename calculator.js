@@ -7,32 +7,7 @@ const operatorFunctions = {
 
 let numbers = [];
 let operators = [];
-let history;
-
-function operate() {
-  history = { numbers: [...numbers], operators: [...operators] };
-  updateHistory();
-
-  while (operators.length) {
-    const operator = operators.shift();
-    const number1 = numbers.shift();
-    const number2 = numbers.shift();
-    const operatorFunc = operatorFunctions[operator];
-
-    if (operatorFunc == undefined) {
-      return alert("Unsupported operator " + operator);
-    }
-
-    const result = operatorFunc(Number(number1), Number(number2));
-    numbers.unshift(result);
-  }
-
-  if (isNaN(numbers[0])) {
-    alert(`Invalid result, check your expression`);
-  } else if (!Number.isInteger(numbers[0])) {
-    numbers[0] = numbers[0].toFixed(3);
-  }
-}
+let history = { numbers: [], operators: [] };
 
 function addNumber(number) {
   if (numbers.length == operators.length) {
@@ -52,6 +27,32 @@ function addOperator(operator) {
   operators[operators.length - 1] = operator;
 }
 
+function reduceExpression() {
+  const operator = operators.shift();
+  const number1 = numbers.shift();
+  const number2 = numbers.shift();
+  const operatorFunc = operatorFunctions[operator];
+
+  const reducedToken = operatorFunc(Number(number1), Number(number2));
+  numbers.unshift(reducedToken);
+}
+
+function calculateExpression() {
+  const numbersCopy = [...numbers];
+  const operatorsCopy = [...operators];
+
+  while (operators.length) reduceExpression();
+
+  if (isNaN(numbers[0])) {
+    alert("Invalid Expression!");
+    numbers = numbersCopy;
+    operators = operatorsCopy;
+  } else {
+    history = { numbers: numbersCopy, operators: operatorsCopy };
+    updateHistory();
+  }
+}
+
 function deleteExpression() {
   const longestArr = numbers.length > operators.length ? numbers : operators;
 
@@ -67,7 +68,7 @@ function clearExpression() {
   operators = [];
 }
 
-function getExpression() {
+function getExpression(numbers, operators) {
   let expression = "";
 
   for (let i = 0; i < numbers.length; i++) {
@@ -78,19 +79,18 @@ function getExpression() {
 }
 
 function updateDisplay() {
-  document.querySelector("#display").value = getExpression();
+  document.querySelector("#display").value = getExpression(numbers, operators);
 }
 
 function updateHistory() {
-  document.querySelector("#history").textContent = getExpression();
+  document.querySelector("#history").textContent = getExpression(
+    history.numbers,
+    history.operators
+  );
 }
 
 function restoreHistory() {
   if (history.numbers.length == 0) return;
-
-  numbers = [];
-  operators = [];
-  updateHistory();
 
   numbers = history.numbers;
   operators = history.operators;
@@ -108,7 +108,7 @@ document.querySelector(".operators").addEventListener("click", (e) => {
   if (e.target.nodeName !== "BUTTON") return;
 
   if (e.target.id === "equal") {
-    operate();
+    calculateExpression();
   } else if (e.target.id === "clear") {
     clearExpression();
   } else if (e.target.id === "delete") {
