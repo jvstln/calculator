@@ -19,10 +19,11 @@ main {
   border-radius: 10px;
 }
 #display {
-  border-radius: 10px 10px 0 0;
-  width: 100%;
-  padding: 50px 20px 10px;
   background: white;
+  width: 100%;
+  padding: 30px 20px 10px;
+  border-radius: 10px 10px 0 0;
+  border: none;
   text-align: right;
   font-size: 30px;
 }

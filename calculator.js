@@ -1,4 +1,4 @@
-const supportedOperators = {
+const operatorFunctions = {
   "+": (num1 = 0, num2 = 0) => num1 + num2,
   "-": (num1 = 0, num2 = 0) => num1 - num2,
   "*": (num1 = 0, num2 = 1) => num1 * num2,
@@ -13,7 +13,7 @@ function operate() {
     const operator = operators.shift();
     const number1 = numbers.shift();
     const number2 = numbers.shift();
-    const operatorFunc = supportedOperators[operator];
+    const operatorFunc = operatorFunctions[operator];
 
     if (operatorFunc == undefined) {
       return alert("Unsupported operator " + operator);
@@ -49,7 +49,7 @@ function updateDisplay() {
     expression += `${numbers[i] ?? ""}${operators[i] ?? ""}`;
   }
 
-  document.querySelector("#display").textContent = expression;
+  document.querySelector("#display").value = expression;
 }
 
 document.querySelector(".digits").addEventListener("click", (e) => {
