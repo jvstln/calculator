@@ -42,6 +42,13 @@ function addOperator(operator) {
   operators[operators.length - 1] = operator;
 }
 
+function deleteExpression() {
+  const longestArr = numbers.length > operators.length ? numbers : operators;
+  const slicedToken = String(longestArr.pop() ?? "").slice(0, -1);
+
+  if (slicedToken) longestArr.push(slicedToken);
+}
+
 function updateDisplay() {
   let expression = "";
 
@@ -67,6 +74,8 @@ document.querySelector(".operators").addEventListener("click", (e) => {
   } else if (e.target.id === "clear") {
     numbers = [];
     operators = [];
+  } else if (e.target.id === "delete") {
+    deleteExpression();
   } else {
     addOperator(e.target.dataset.value);
   }

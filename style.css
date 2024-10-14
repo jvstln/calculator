@@ -20,7 +20,7 @@ main {
 }
 #display {
   background: white;
-  width: 100%;
+  width: 300px;
   padding: 30px 20px 10px;
   border-radius: 10px 10px 0 0;
   border: none;
@@ -30,6 +30,7 @@ main {
 .keys {
   padding: 10px;
   display: flex;
+  justify-content: space-between;
   gap: 10px;
 }
 button {
