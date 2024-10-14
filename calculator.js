@@ -14,6 +14,15 @@ function addNumber(number) {
     numbers.push("");
   }
 
+  // Filters and checks before adding number to entry
+  const currentNumberToken = numbers[number.length - 1];
+  if (
+    number === "." &&
+    (currentNumberToken.includes(".") || currentNumberToken == "")
+  ) {
+    return;
+  }
+
   numbers[numbers.length - 1] += number;
 }
 
