@@ -62,25 +62,28 @@ function deleteExpression() {
   if (slicedToken) longestArr.push(slicedToken);
 }
 
-function updateDisplay() {
+function clearExpression() {
+  numbers = [];
+  operators = [];
+}
+
+function getExpression() {
   let expression = "";
 
   for (let i = 0; i < numbers.length; i++) {
     expression += `${numbers[i] ?? ""}${operators[i] ?? ""}`;
   }
 
-  document.querySelector("#display").value = expression;
+  return expression;
+}
+
+function updateDisplay() {
+  document.querySelector("#display").value = getExpression();
 }
 
 function updateHistory() {
-  let expression = "";
-
-  for (let i = 0; i < numbers.length; i++) {
-    expression += `${numbers[i] ?? ""}${operators[i] ?? ""}`;
-  }
-
-  document.querySelector("#history").value = expression;
-  document.querySelector("#history").style.borderBottom = "1px solid gray";
+  document.querySelector("#history").value = getExpression();
+  document.querySelector("#history").style.borderColor = "gray";
 }
 
 document.querySelector(".digits").addEventListener("click", (e) => {
@@ -96,8 +99,7 @@ document.querySelector(".operators").addEventListener("click", (e) => {
   if (e.target.id === "equal") {
     operate();
   } else if (e.target.id === "clear") {
-    numbers = [];
-    operators = [];
+    clearExpression();
   } else if (e.target.id === "delete") {
     deleteExpression();
   } else {
