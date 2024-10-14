@@ -18,14 +18,21 @@ main {
   border: 1px solid #1955d4;
   border-radius: 10px;
 }
-#display {
+#display,
+#history {
+  display: block;
   background: white;
   width: 300px;
-  padding: 30px 20px 10px;
-  border-radius: 10px 10px 0 0;
+  padding: 16px;
   border: none;
   text-align: right;
   font-size: 30px;
+}
+#history {
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  font-size: 14px;
+  border-width: 1px;
 }
 .keys {
   padding: 10px;

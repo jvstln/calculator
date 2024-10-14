@@ -7,8 +7,12 @@ const operatorFunctions = {
 
 let numbers = [];
 let operators = [];
+let history = [];
 
 function operate() {
+  history = [[...numbers], [...operators]];
+  updateHistory();
+
   while (operators.length) {
     const operator = operators.shift();
     const number1 = numbers.shift();
@@ -21,6 +25,12 @@ function operate() {
 
     const result = operatorFunc(Number(number1), Number(number2));
     numbers.unshift(result);
+  }
+
+  if (isNaN(numbers[0])) {
+    alert(`Invalid result, check your expression`);
+  } else if (!Number.isInteger(numbers[0])) {
+    numbers[0] = numbers[0].toFixed(3);
   }
 }
 
@@ -44,7 +54,10 @@ function addOperator(operator) {
 
 function deleteExpression() {
   const longestArr = numbers.length > operators.length ? numbers : operators;
-  const slicedToken = String(longestArr.pop() ?? "").slice(0, -1);
+
+  const token = String(longestArr.pop() ?? "");
+  const slicedToken =
+    token == "Infinity" || token == "-Infinity" ? "" : token.slice(0, -1);
 
   if (slicedToken) longestArr.push(slicedToken);
 }
@@ -57,6 +70,17 @@ function updateDisplay() {
   }
 
   document.querySelector("#display").value = expression;
+}
+
+function updateHistory() {
+  let expression = "";
+
+  for (let i = 0; i < numbers.length; i++) {
+    expression += `${numbers[i] ?? ""}${operators[i] ?? ""}`;
+  }
+
+  document.querySelector("#history").value = expression;
+  document.querySelector("#history").style.borderBottom = "1px solid gray";
 }
 
 document.querySelector(".digits").addEventListener("click", (e) => {
