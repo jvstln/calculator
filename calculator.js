@@ -7,7 +7,6 @@ const supportedOperators = {
 
 let numbers = [];
 let operators = [];
-let inputMode = "";
 
 function operate() {
   while (operators.length) {
@@ -26,9 +25,8 @@ function operate() {
 }
 
 function addNumber(number) {
-  if (inputMode !== "number") {
+  if (numbers.length == operators.length) {
     numbers.push("");
-    inputMode = "number";
   }
 
   numbers[numbers.length - 1] += number;
@@ -37,9 +35,8 @@ function addNumber(number) {
 function addOperator(operator) {
   if (operator == "" || numbers.length == 0) return;
 
-  if (inputMode !== "operator") {
+  if (operators.length < numbers.length) {
     operators.push("");
-    inputMode = "operator";
   }
 
   operators[operators.length - 1] = operator;
@@ -67,9 +64,12 @@ document.querySelector(".operators").addEventListener("click", (e) => {
 
   if (e.target.id === "equal") {
     operate();
-    updateDisplay();
+  } else if (e.target.id === "clear") {
+    numbers = [];
+    operators = [];
   } else {
     addOperator(e.target.dataset.value);
-    updateDisplay();
   }
+
+  updateDisplay();
 });
