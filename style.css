@@ -50,12 +50,13 @@ button:active {
 .digits,
 .operators {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   flex-wrap: wrap;
   gap: 5px;
   width: 160px;
 }
 .operators {
+  flex-direction: row-reverse;
   width: 110px;
 }
 .operators button {

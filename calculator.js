@@ -1,12 +1,75 @@
-const operators = {
+const supportedOperators = {
   "+": (num1 = 0, num2 = 0) => num1 + num2,
   "-": (num1 = 0, num2 = 0) => num1 - num2,
   "*": (num1 = 0, num2 = 1) => num1 * num2,
   "/": (num1 = 0, num2 = 1) => num1 / num2,
 };
 
-function operate(operator, ...numbers) {
-  return operators[operator]?.(...numbers);
+let numbers = [];
+let operators = [];
+let inputMode = "";
+
+function operate() {
+  while (operators.length) {
+    const operator = operators.shift();
+    const number1 = numbers.shift();
+    const number2 = numbers.shift();
+    const operatorFunc = supportedOperators[operator];
+
+    if (operatorFunc == undefined) {
+      return alert("Unsupported operator " + operator);
+    }
+
+    const result = operatorFunc(Number(number1), Number(number2));
+    numbers.unshift(result);
+  }
 }
 
-document.querySelector("digits");
+function addNumber(number) {
+  if (inputMode !== "number") {
+    numbers.push("");
+    inputMode = "number";
+  }
+
+  numbers[numbers.length - 1] += number;
+}
+
+function addOperator(operator) {
+  if (operator == "" || numbers.length == 0) return;
+
+  if (inputMode !== "operator") {
+    operators.push("");
+    inputMode = "operator";
+  }
+
+  operators[operators.length - 1] = operator;
+}
+
+function updateDisplay() {
+  let expression = "";
+
+  for (let i = 0; i < numbers.length; i++) {
+    expression += `${numbers[i] ?? ""}${operators[i] ?? ""}`;
+  }
+
+  document.querySelector("#display").textContent = expression;
+}
+
+document.querySelector(".digits").addEventListener("click", (e) => {
+  if (e.target.nodeName !== "BUTTON") return;
+
+  addNumber(e.target.dataset.value);
+  updateDisplay();
+});
+
+document.querySelector(".operators").addEventListener("click", (e) => {
+  if (e.target.nodeName !== "BUTTON") return;
+
+  if (e.target.id === "equal") {
+    operate();
+    updateDisplay();
+  } else {
+    addOperator(e.target.dataset.value);
+    updateDisplay();
+  }
+});
