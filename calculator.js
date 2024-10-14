@@ -1,15 +1,15 @@
 const operators = {
-  '+': add,
-  '-': subtract,
-  '*': multiply,
-  '/': divide,
-}
+  "+": add,
+  "-": subtract,
+  "*": multiply,
+  "/": divide,
+};
 
-function add(...numbers)  {
+function add(...numbers) {
   return numbers.reduce((sum, number) => sum + number, 0);
 }
 
-function subtract(...numbers)  {
+function subtract(...numbers) {
   if (numbers.length == 0) return 0;
   return numbers.reduce((difference, number) => difference - number);
 }
@@ -24,5 +24,5 @@ function divide(...numbers) {
 }
 
 function operate(operator, ...numbers) {
-  return operators[operator]?.(...numbers)
+  return operators[operator]?.(...numbers);
 }
