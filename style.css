@@ -33,6 +33,7 @@ main {
   border-radius: 10px 10px 0 0;
   font-size: 14px;
   border-width: 1px;
+  height: 14px;
 }
 .keys {
   padding: 10px;

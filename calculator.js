@@ -7,10 +7,10 @@ const operatorFunctions = {
 
 let numbers = [];
 let operators = [];
-let history = [];
+let history;
 
 function operate() {
-  history = [[...numbers], [...operators]];
+  history = { numbers: [...numbers], operators: [...operators] };
   updateHistory();
 
   while (operators.length) {
@@ -82,8 +82,19 @@ function updateDisplay() {
 }
 
 function updateHistory() {
-  document.querySelector("#history").value = getExpression();
-  document.querySelector("#history").style.borderColor = "gray";
+  document.querySelector("#history").textContent = getExpression();
+}
+
+function restoreHistory() {
+  if (history.numbers.length == 0) return;
+
+  numbers = [];
+  operators = [];
+  updateHistory();
+
+  numbers = history.numbers;
+  operators = history.operators;
+  updateDisplay();
 }
 
 document.querySelector(".digits").addEventListener("click", (e) => {
@@ -108,3 +119,5 @@ document.querySelector(".operators").addEventListener("click", (e) => {
 
   updateDisplay();
 });
+
+document.querySelector("#history").addEventListener("click", restoreHistory);
