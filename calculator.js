@@ -36,7 +36,6 @@ const calculator = {
   },
 
   addPreUnary(token) {
-    // const currentToken = this.expression.at(-1);
     const position = this.expression.length % 4;
 
     if (position == 0) {
@@ -77,8 +76,12 @@ const calculator = {
       this.expression.push(token);
     } else if (position == 3) {
       this.expression.push(token);
-    } else if (position == 4) {
+    } else if (position == 0) {
       this.expression[this.expression.length - 1] = token;
     }
+  },
+
+  getExpressionString() {
+    return this.expression.join("");
   },
 };
