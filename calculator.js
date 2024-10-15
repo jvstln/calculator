@@ -25,4 +25,60 @@ const calculator = {
   isBinary(token) {
     return this.tokenTypes.binary.includes(token);
   },
+
+  expression: [],
+
+  addToken(token) {
+    if (this.isPreUnary(token)) this.addPreUnary(token);
+    if (this.isOperand(token)) this.addOperand(token);
+    if (this.isPostUnary(token)) this.addPostUnary(token);
+    if (this.isBinary(token)) this.addBinary(token);
+  },
+
+  addPreUnary(token) {
+    // const currentToken = this.expression.at(-1);
+    const position = this.expression.length % 4;
+
+    if (position == 0) {
+      this.expression.push(token);
+    } else if (position == 1) {
+      this.expression[this.expression.length - 1] = token;
+    }
+  },
+
+  addOperand(token) {
+    const position = this.expression.length % 4;
+
+    if (position == 0) {
+      this.addPreUnary("");
+      this.expression.push(token);
+    } else if (position == 1) {
+      this.expression.push(token);
+    } else if (position == 2) {
+      this.expression[this.expression.length - 1] += token;
+    }
+  },
+
+  addPostUnary(token) {
+    const position = this.expression.length % 4;
+
+    if (position == 2) {
+      this.expression.push(token);
+    } else if (position == 3) {
+      this.expression[this.expression.length - 1] = token;
+    }
+  },
+
+  addBinary(token) {
+    const position = this.expression.length % 4;
+
+    if (position == 2) {
+      this.addPostUnary("");
+      this.expression.push(token);
+    } else if (position == 3) {
+      this.expression.push(token);
+    } else if (position == 4) {
+      this.expression[this.expression.length - 1] = token;
+    }
+  },
 };
