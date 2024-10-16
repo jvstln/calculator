@@ -53,6 +53,9 @@ const calculator = {
   addOperand(token) {
     const position = this.expression.length % 4;
 
+    if (token == "." && position < 2) token = "0.";
+    if (token == "." && this.expression.at(-1).includes(".")) return;
+
     if (position == 0) {
       this.addPreUnary("");
       this.expression.push(token);
