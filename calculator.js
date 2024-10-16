@@ -1,7 +1,7 @@
 const calculator = {
   operatorFunctions: {
-    "+": (num1, num2) => (num2 == undefined ? Number(num1) : num1 + num2),
-    "-": (num1, num2) => (num2 == undefined ? Number(num1) : num1 - num2),
+    "+": (num1, num2 = 0) => num1 + num2,
+    "-": (num1, num2) => (num2 == undefined ? -num1 : num1 - num2),
     "*": (num1, num2 = 1) => num1 * num2,
     "/": (num1, num2 = 1) => num1 / num2,
     "%": (num = 0) => num / 100,
@@ -10,6 +10,10 @@ const calculator = {
     preUnary: ["+", "-"],
     postUnary: ["%"],
     binary: ["+", "-", "*", "/"],
+    binaryPrecedence: [
+      ["*", "/"],
+      ["+", "-"],
+    ],
     operand: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."],
   },
 
@@ -83,5 +87,35 @@ const calculator = {
 
   getExpressionString() {
     return this.expression.join("");
+  },
+
+  calcExpression() {
+    let result = [];
+
+    // Evaluate the unary operators first
+    for (let i = 0; i < this.expression.length; i += 4) {
+      let preUnaryFunc = this.operatorFunctions[this.expression[i]];
+      let operand = Number(this.expression[i + 1] ?? 0);
+      let postUnaryFunc = this.operatorFunctions[this.expression[i + 2]];
+
+      if (preUnaryFunc) operand = preUnaryFunc(operand);
+      if (postUnaryFunc) operand = postUnaryFunc(operand);
+
+      result.push(operand, this.expression[i + 3]);
+    }
+
+    // Evaluate binary operators by precedence
+    this.tokenTypes.binaryPrecedence.forEach((operators) => {
+      for (let i = 0; i < result.length; ) {
+        let binaryFunc = this.operatorFunctions[result[i + 1]];
+
+        if (operators.includes(result[i + 1]) && binaryFunc) {
+          let [operand1, operator, operand2] = result.splice(i, 3);
+          result.splice(i, 0, binaryFunc(operand1, operand2));
+        } else i += 2;
+      }
+    });
+
+    return result[0];
   },
 };
