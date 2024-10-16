@@ -86,10 +86,6 @@ const calculator = {
     }
   },
 
-  getExpression() {
-    return this.expression.join("");
-  },
-
   deleteExpression() {
     if (this.expression.length == 0) return;
     let lastToken = this.expression.pop();
