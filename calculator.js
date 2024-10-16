@@ -31,6 +31,7 @@ const calculator = {
   },
 
   expression: [],
+  history: [],
 
   addToken(token) {
     if (this.isPreUnary(token)) this.addPreUnary(token);
@@ -85,11 +86,27 @@ const calculator = {
     }
   },
 
-  getExpressionString() {
+  getExpression() {
     return this.expression.join("");
   },
 
+  deleteExpression() {
+    if (this.expression.length == 0) return;
+    let lastToken = this.expression.pop();
+
+    if (lastToken == "") return this.deleteExpression();
+
+    this.expression.push(lastToken.slice(0, -1));
+    while (this.expression.at(-1) == "") this.expression.pop();
+  },
+
+  clearExpression() {
+    this.history.push(this.expression);
+    this.expression = [];
+  },
+
   calcExpression() {
+    if (this.expression.length == 0) return 0;
     let result = [];
 
     // Evaluate the unary operators first
