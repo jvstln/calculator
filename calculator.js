@@ -104,7 +104,7 @@ const calculator = {
     this.expression = [];
   },
 
-  calcExpression() {
+  calcExpression(decimalPlaces = 4) {
     if (this.expression.length == 0) return 0;
     let result = [];
 
@@ -132,6 +132,8 @@ const calculator = {
       }
     });
 
-    return result[0];
+    return Number.isInteger(result[0])
+      ? result[0]
+      : result[0].toFixed(decimalPlaces);
   },
 };
