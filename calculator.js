@@ -1,3 +1,8 @@
+const PRE_UNARY_POS = 0;
+const OPERAND_POS = 1;
+const POST_UNARY_POS = 2;
+const BINARY_POS = 3;
+
 const calculator = {
   operatorFunctions: {
     "+": (num1, num2 = 0) => num1 + num2,
@@ -16,6 +21,30 @@ const calculator = {
     ],
     operand: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."],
   },
+  /* How the algorithm works: 
+  A token is the smallest unit in an expression eg +, 1, 50, %, **
+  Expressions are stored as an array of tokens in the following format:
+    [
+      preUnaryOperator, operand, postUnaryOperator, binaryOperator,
+      preUnaryOperator, operand, postUnaryOperator, binaryOperator...
+    ]
+    where preUnary (eg +) and postUnary (eg % i.e percentage) are optional
+
+  POSITION MATTERS! all token must be stored in the same repeating position in the array
+    preUnaryOperators must be in 0 index position OR in expression.length % 4 == 0 index position
+    operands must be in 1 index position OR in expression.length % 4 == 1 index position
+    and so on...
+
+    that means:
+      a preUnary must follow a binary or nothing (at the beginning of the expression array)
+      an operand must follow a preunary or binary (if following a binary, preunary becomes empty)
+      a postUnary must follow an operand
+      an binary must follow a postunary or operand (if following an operand, postunary becomes empty)
+
+    if a token is optional (ie preUnary and postUnary), an empty string ("") should be placed in its position
+  */
+  expression: [],
+  history: [],
 
   isOperand(token) {
     return this.tokenTypes.operand.includes(token);
@@ -30,9 +59,6 @@ const calculator = {
     return this.tokenTypes.binary.includes(token);
   },
 
-  expression: [],
-  history: [],
-
   addToken(token) {
     if (this.isPreUnary(token)) this.addPreUnary(token);
     if (this.isOperand(token)) this.addOperand(token);
@@ -41,50 +67,50 @@ const calculator = {
   },
 
   addPreUnary(token) {
-    const position = this.expression.length % 4;
+    const nextPosition = this.expression.length % 4;
 
-    if (position == 0) {
+    if (nextPosition == PRE_UNARY_POS) {
       this.expression.push(token);
-    } else if (position == 1) {
+    } else if (nextPosition == OPERAND_POS) {
       this.expression[this.expression.length - 1] = token;
     }
   },
 
   addOperand(token) {
-    const position = this.expression.length % 4;
+    const nextPosition = this.expression.length % 4;
 
-    if (token == "." && position < 2) token = "0.";
+    if (token == "." && !this.expression.at(-1)) token = "0.";
     if (token == "." && this.expression.at(-1).includes(".")) return;
 
-    if (position == 0) {
+    if (nextPosition == PRE_UNARY_POS) {
       this.addPreUnary("");
       this.expression.push(token);
-    } else if (position == 1) {
+    } else if (nextPosition == OPERAND_POS) {
       this.expression.push(token);
-    } else if (position == 2) {
+    } else if (nextPosition == POST_UNARY_POS) {
       this.expression[this.expression.length - 1] += token;
     }
   },
 
   addPostUnary(token) {
-    const position = this.expression.length % 4;
+    const nextPosition = this.expression.length % 4;
 
-    if (position == 2) {
+    if (nextPosition == POST_UNARY_POS) {
       this.expression.push(token);
-    } else if (position == 3) {
+    } else if (nextPosition == BINARY_POS) {
       this.expression[this.expression.length - 1] = token;
     }
   },
 
   addBinary(token) {
-    const position = this.expression.length % 4;
+    const nextPosition = this.expression.length % 4;
 
-    if (position == 2) {
+    if (nextPosition == POST_UNARY_POS) {
       this.addPostUnary("");
       this.expression.push(token);
-    } else if (position == 3) {
+    } else if (nextPosition == BINARY_POS) {
       this.expression.push(token);
-    } else if (position == 0) {
+    } else if (nextPosition == PRE_UNARY_POS) {
       this.expression[this.expression.length - 1] = token;
     }
   },
