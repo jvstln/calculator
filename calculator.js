@@ -14,6 +14,9 @@ const calculator = {
 
   preUnaryOperators: ["+", "-"],
   postUnaryOperators: ["%"],
+  // By default, preUnary operators are evaluated before postUnary operators.
+  // Any postUnary operator inside this array will be evaluated before preUnary operators
+  postUnaryPrecedence: [],
   binaryOperators: [
     ["*", "/"],
     ["+", "-"],
@@ -127,23 +130,31 @@ const calculator = {
     this.expression = [];
   },
 
-  calcExpression(decimalPlaces = 4) {
-    if (this.expression.length == 0) return 0;
-    let result = [];
+  evaluateUnaryOperators(expressionArray) {
+    const result = [];
 
-    // Evaluate the unary operators first
-    for (let i = 0; i < this.expression.length; i += 4) {
-      let preUnaryFunc = this.operatorFunctions[this.expression[i]];
-      let operand = Number(this.expression[i + 1] ?? 0);
-      let postUnaryFunc = this.operatorFunctions[this.expression[i + 2]];
+    for (let i = 0; i < expressionArray.length; i += 4) {
+      let preUnaryFunc = this.operatorFunctions[expressionArray[i]];
+      let operand = Number(expressionArray[i + 1]);
+      let postUnaryFunc = this.operatorFunctions[expressionArray[i + 2]];
 
-      if (preUnaryFunc) operand = preUnaryFunc(operand);
+      const evalPostUnaryFirst = this.postUnaryPrecedence.includes(
+        expressionArray[i + 2]
+      );
+
+      if (preUnaryFunc && !evalPostUnaryFirst) operand = preUnaryFunc(operand);
       if (postUnaryFunc) operand = postUnaryFunc(operand);
+      if (preUnaryFunc && evalPostUnaryFirst) operand = preUnaryFunc(operand);
 
-      result.push(operand, this.expression[i + 3]);
+      result.push(operand, expressionArray[i + 3]);
     }
 
-    // Evaluate binary operators by precedence
+    return result;
+  },
+
+  evaluateBinaryOperators(expressionArray) {
+    const result = [...expressionArray];
+
     this.binaryOperators.forEach((operators) => {
       for (let i = 0; i < result.length; ) {
         let binaryFunc = this.operatorFunctions[result[i + 1]];
@@ -154,6 +165,17 @@ const calculator = {
         } else i += 2;
       }
     });
+
+    return result;
+  },
+
+  calcExpression(decimalPlaces = 4) {
+    if (this.expression.length == 0) return 0;
+
+    // reducedExpression becomes in the format [operand, binaryOpertor, operand, ...]
+    let reducedExpression = this.evaluateUnaryOperators(this.expression);
+
+    let result = this.evaluateBinaryOperators(reducedExpression);
 
     return Number.isInteger(result[0])
       ? result[0]
