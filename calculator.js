@@ -11,16 +11,13 @@ const calculator = {
     "/": (num1, num2 = 1) => num1 / num2,
     "%": (num = 0) => num / 100,
   },
-  tokenTypes: {
-    preUnary: ["+", "-"],
-    postUnary: ["%"],
-    binary: ["+", "-", "*", "/"],
-    binaryPrecedence: [
-      ["*", "/"],
-      ["+", "-"],
-    ],
-    operand: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."],
-  },
+
+  preUnaryOperators: ["+", "-"],
+  postUnaryOperators: ["%"],
+  binaryOperators: [
+    ["*", "/"],
+    ["+", "-"],
+  ],
   /* How the algorithm works: 
   A token is the smallest unit in an expression eg +, 1, 50, %, **
   Expressions are stored as an array of tokens in the following format:
@@ -47,16 +44,16 @@ const calculator = {
   history: [],
 
   isOperand(token) {
-    return this.tokenTypes.operand.includes(token);
+    return /^\d*\.?\d*$/.test(token);
   },
   isPreUnary(token) {
-    return this.tokenTypes.preUnary.includes(token);
+    return this.preUnaryOperators.includes(token);
   },
   isPostUnary(token) {
-    return this.tokenTypes.postUnary.includes(token);
+    return this.postUnaryOperators.includes(token);
   },
   isBinary(token) {
-    return this.tokenTypes.binary.includes(token);
+    return this.binaryOperators.flat().includes(token);
   },
 
   addToken(token) {
@@ -147,7 +144,7 @@ const calculator = {
     }
 
     // Evaluate binary operators by precedence
-    this.tokenTypes.binaryPrecedence.forEach((operators) => {
+    this.binaryOperators.forEach((operators) => {
       for (let i = 0; i < result.length; ) {
         let binaryFunc = this.operatorFunctions[result[i + 1]];
 
