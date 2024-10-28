@@ -201,30 +201,42 @@ function updateDisplay() {
     ?.join("");
 }
 
-document.querySelector(".calculator").addEventListener("click", (e) => {
-  if (e.target.nodeName !== "BUTTON") return;
-
-  const btnValue = e.target.dataset.value;
-
-  if (calculator.isToken(btnValue)) {
-    calculator.addToken(btnValue);
+function mapActionsToTokens(token) {
+  if (calculator.isToken(token)) {
+    calculator.addToken(token);
   }
 
-  if (btnValue == "=") {
+  if (token == "=") {
     const result = calculator.calcExpression();
     calculator.clearExpression();
     calculator.addToken(String(result));
   }
 
-  if (btnValue == "del") {
+  if (token == "del") {
     calculator.deleteExpression();
   }
 
-  if (btnValue == "clear") {
+  if (token == "clear") {
     calculator.clearExpression();
   }
 
   updateDisplay();
+}
+
+window.addEventListener("keydown", (e) => {
+  let keyValue = e.key;
+
+  if (e.key == "Enter") keyValue = "=";
+  if (e.key == "Backspace") keyValue = "del";
+  if (e.key == "Escape") keyValue = "clear";
+
+  mapActionsToTokens(keyValue);
+});
+
+document.querySelector(".calculator").addEventListener("click", (e) => {
+  if (e.target.nodeName !== "BUTTON") return;
+
+  mapActionsToTokens(e.target.dataset.value);
 });
 
 document.querySelector(".history").addEventListener("click", () => {
