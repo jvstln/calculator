@@ -226,3 +226,10 @@ document.querySelector(".calculator").addEventListener("click", (e) => {
 
   updateDisplay();
 });
+
+document.querySelector(".history").addEventListener("click", () => {
+  if (calculator.history.length == 0) return;
+
+  calculator.expression = calculator.history.pop();
+  updateDisplay();
+});
