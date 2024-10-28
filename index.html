@@ -4,8 +4,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basic Calculator</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="calculator">
+      <div class="display">
+        <div class="history"></div>
+        <div class="expression"></div>
+      </div>
+      <div class="calculator-base">
+        <div class="operand">
+          <div class="core-functions">
+            <button data-value="clear" class="clear">AC</button>
+            <button data-value="del" class="del">&#x232b;</button>
+            <button data-value="%" class="percentage">%</button>
+          </div>
+          <button data-value="9" class="nine">9</button>
+          <button data-value="8" class="eight">8</button>
+          <button data-value="7" class="seven">7</button>
+          <button data-value="6" class="six">6</button>
+          <button data-value="5" class="five">5</button>
+          <button data-value="4" class="four">4</button>
+          <button data-value="3" class="three">3</button>
+          <button data-value="2" class="two">2</button>
+          <button data-value="1" class="one">1</button>
+          <button data-value="0" class="zero">0</button>
+          <button data-value="." class="dot">&bull;</button>
+        </div>
+        <div class="basic-arithimetics">
+          <button data-value="/" class="divide">&divide;</button>
+          <button data-value="*" class="times">&times;</button>
+          <button data-value="-" class="minus">&minus;</button>
+          <button data-value="+" class="plus">&plus;</button>
+          <button data-value="=" class="equals">&equals;</button>
+        </div>
+      </div>
+    </div>
     <script src="calculator.js"></script>
   </body>
 </html>
