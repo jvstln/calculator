@@ -58,6 +58,14 @@ const calculator = {
   isBinary(token) {
     return this.binaryOperators.flat().includes(token);
   },
+  isToken(token) {
+    return (
+      this.isOperand(token) ||
+      this.isPreUnary(token) ||
+      this.isPostUnary(token) ||
+      this.isBinary(token)
+    );
+  },
 
   addToken(token) {
     if (this.isPreUnary(token)) this.addPreUnary(token);
@@ -177,8 +185,44 @@ const calculator = {
 
     let result = this.evaluateBinaryOperators(reducedExpression);
 
-    return Number.isInteger(result[0])
+    const roundedOffResult = result[0].toFixed(decimalPlaces);
+    return roundedOffResult.length > String(result[0]).length
       ? result[0]
       : result[0].toFixed(decimalPlaces);
   },
 };
+
+function updateDisplay() {
+  document.querySelector(".expression").textContent =
+    calculator.expression.join("");
+
+  document.querySelector(".history").textContent = calculator.history
+    .at(-1)
+    ?.join("");
+}
+
+document.querySelector(".calculator").addEventListener("click", (e) => {
+  if (e.target.nodeName !== "BUTTON") return;
+
+  const btnValue = e.target.dataset.value;
+
+  if (calculator.isToken(btnValue)) {
+    calculator.addToken(btnValue);
+  }
+
+  if (btnValue == "=") {
+    const result = calculator.calcExpression();
+    calculator.clearExpression();
+    calculator.addToken(String(result));
+  }
+
+  if (btnValue == "del") {
+    calculator.deleteExpression();
+  }
+
+  if (btnValue == "clear") {
+    calculator.clearExpression();
+  }
+
+  updateDisplay();
+});
